@@ -1,0 +1,28 @@
+FROM lacledeslan/gamesvr:srcds.linux
+
+MAINTAINER Laclede's LAN <contact@lacledeslan.com>
+
+ENV SERVER_NAME="gamesvr-blackmesa.linux"
+
+WORKDIR /app/bin/
+
+# Install Black Mesa
+RUN useradd \
+		--shell /bin/bash \
+		BLACKMESA &&\
+	# Create output directory &&\
+		mkdir /app/bin --parents &&\
+	# Download &&\
+		/app/steamcmd/steamcmd.sh \
+			+login anonymous \
+			+force_install_dir /app/bin/ \
+			+app_update 346680 validate \
+			+quit &&\
+	# Set permissions &&\
+		chown -R BLACKMESA /app/bin
+	
+COPY ./dist/ /app/bin/
+
+USER BLACKMESA
+
+CMD ["/bin/bash"]
