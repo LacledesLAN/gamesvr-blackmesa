@@ -1,1 +1,1 @@
-# gamesvr-blackmesa
+# gamesvr-srcds-blackmesa
