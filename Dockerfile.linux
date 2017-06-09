@@ -1,3 +1,5 @@
+# escape=`
+
 FROM lacledeslan/gamesvr-srcds:linux
 
 LABEL maintainer "Laclede's LAN <contact@lacledeslan.com>"
@@ -6,26 +8,30 @@ ENV IMAGE="gamesvr-srcds-blackmesa:linux"
 
 HEALTHCHECK NONE
 
-# Copy files (if any) from the build-cache
-COPY ./build-cache/ /app/bin/
-
-WORKDIR /app/bin/
-
-# Install Black Mesa
-RUN useradd \
-		--shell /bin/bash \
-		BLACKMESA &&\
-	# Create output directory &&\
-		mkdir /app/bin --parents &&\
-	# Download &&\
-		/app/steamcmd/steamcmd.sh \
-			+login anonymous \
-			+force_install_dir /app/bin/ \
-			+app_update 346680 validate \
-			+quit &&\
-	# Set permissions &&\
-		chown -R BLACKMESA /app/bin
+# Set up user
+RUN useradd `
+		--home /app/bin `
+		--gid srcds `
+		--shell /bin/bash `
+		--system `
+		BLACKMESA &&`
+	chown -R BLACKMESA:srcds /app/bin
 
 USER BLACKMESA
 
+# Copy files (if any) from the build-cache
+COPY ./build-cache/ /app/bin/
+
+# Install Black Mesa
+RUN echo "Downloading Black Mesa via SteamCMD" &&`
+		/app/steamcmd/steamcmd.sh `
+			+login anonymous `
+			+force_install_dir /app/bin/ `
+			+app_update 346680 validate `
+			+quit
+
+WORKDIR /app/bin/
+
 CMD ["/bin/bash"]
+
+ONBUILD USER root
