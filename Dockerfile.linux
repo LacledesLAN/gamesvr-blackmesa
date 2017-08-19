@@ -1,6 +1,6 @@
 # escape=`
 
-FROM lacledeslan/steamcmd:linux as steamcmd-builder
+FROM lacledeslan/steamcmd:linux as steamcmd-bms-builder
 
 # Copy cached build files (if any)
 COPY ./build-cache/ /app/output
@@ -50,7 +50,7 @@ USER BlackMesa
 RUN ln -s /app/bin/steamclient.so /app/.steam/sdk32/steamclient.so
 
 # Copy in from SteamCMD Builder
-COPY --from=steamcmd-builder /app/output /app
+COPY --from=steamcmd-bms-builder /app/output /app
 
 WORKDIR /app
 
