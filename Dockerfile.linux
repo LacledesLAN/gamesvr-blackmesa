@@ -1,17 +1,6 @@
 # escape=`
 
-FROM lacledeslan/steamcmd:linux as steamcmd-bms-builder
-
-# Copy cached build files (if any)
-COPY ./build-cache/ /app/output
-
-# Install Black Mesa
-RUN echo $'\n\nDownloading Black Mesa via SteamCMD' &&`
-        /app/steamcmd.sh `
-            +login anonymous `
-            +force_install_dir /app/output `
-            +app_update 346680 validate `
-            +quit;
+FROM lacledeslan/steamcmd:linux as blackmesa-builder
 
 #=======================================================================
 FROM i386/debian:stretch-slim
@@ -19,12 +8,6 @@ FROM i386/debian:stretch-slim
 ARG VCS_REF
 
 HEALTHCHECK NONE
-
-# Install dependencies
-RUN apt-get update && apt-get install -y `
-        libcurl3-gnutls libstdc++6 libncurses5 libz1 &&`
-    apt-get clean &&`
-    rm -rf /var/lib/apt/lists/*;
 
 LABEL MAINTAINER="Laclede's LAN <contact@lacledeslan.com>" `
       org.label-schema.url="https://github.com/LacledesLAN" `
@@ -34,23 +17,41 @@ LABEL MAINTAINER="Laclede's LAN <contact@lacledeslan.com>" `
       org.label-schema.description="Black Mesa in Docker" `
       org.label-schema.vcs-url="https://github.com/LacledesLAN/gamesvr-blackmesa"
 
-#Add user "BlackMesa" (to user group "srcds")
-RUN groupadd --system srcds &&`
-    mkdir --parents /app/.steam/sdk32 &&`
-        chgrp srcds /app &&`
+## Dependencies & Environment
+RUN dpkg --add-architecture i386;
+
+RUN apt-get update && apt-get install -y `
+        lib32gcc1 libcurl3-gnutls libstdc++6 libncurses5 libz1 &&`
+    apt-get clean &&`
+    rm -rf /var/lib/apt/lists/*;
+
+# Copy cached build files (if any)
+COPY ./build-cache/ /output
+
+## Black Mesa is so large we can't reliably use multi-stage builds in docker cloud
+
+#Pull in SteamCMD
+COPY --from=blackmesa-builder /app /app/steamcmd
+
+# Install Black Mesa using SteamCMD
+RUN echo $'\n\nDownloading Black Mesa via SteamCMD' &&`
+        /app/steamcmd/steamcmd.sh `
+            +login anonymous `
+            +force_install_dir /app `
+            +app_update 346680 validate `
+            +quit;
+
+#Add user "BlackMesa". Assign to group "root" until [github.com/moby/moby/pull/34263] makes it into CE stable
+RUN mkdir --parents /app/.steam/sdk32 &&`
     useradd `
         --home /app `
-        --gid srcds `
+        --gid root `
         --system `
-        BlackMesa &&`
-    chown -R BlackMesa:srcds /app;
-
-USER BlackMesa
+        BlackMesa
 
 RUN ln -s /app/bin/steamclient.so /app/.steam/sdk32/steamclient.so
 
-# Copy in from SteamCMD Builder
-COPY --from=steamcmd-bms-builder /app/output /app
+USER BlackMesa
 
 WORKDIR /app
 
