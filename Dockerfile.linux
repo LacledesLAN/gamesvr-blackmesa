@@ -21,7 +21,7 @@ LABEL MAINTAINER="Laclede's LAN <contact@lacledeslan.com>" `
 RUN dpkg --add-architecture i386;
 
 RUN apt-get update && apt-get install -y `
-        lib32gcc1 libcurl3-gnutls libstdc++6 libncurses5 libz1 &&`
+        libcurl3-gnutls libstdc++6 libncurses5 libz1 &&`
     apt-get clean &&`
     rm -rf /var/lib/apt/lists/*;
 
