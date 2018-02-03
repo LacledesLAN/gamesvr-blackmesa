@@ -12,8 +12,8 @@ services:
 
 script:
   - docker version
-  - docker build --no-cache --tag local/gamesvr-blackmesa --tag lacledeslan/gamesvr-blackmesa --build-arg BUILDNODE=TravisCI ./linux
-  - docker run -it --rm local/gamesvr-blackmesa ./ll-tests/gamesvr-blackmesa.sh
+  - docker build --no-cache -t local -t lacledeslan/gamesvr-blackmesa --build-arg BUILDNODE=TravisCI ./linux
+  - docker run -it --rm local ./ll-tests/gamesvr-blackmesa.sh
 
 notifications:
   slack:
