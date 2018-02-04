@@ -1,5 +1,6 @@
 sudo: required
 os: linux
+language: minimal
 addons:
   apt:
     packages:
@@ -12,8 +13,8 @@ services:
 
 script:
   - docker version
-  - docker build --no-cache -t local -t lacledeslan/gamesvr-blackmesa --build-arg BUILDNODE=TravisCI ./linux
-  - docker run -it --rm local ./ll-tests/gamesvr-blackmesa.sh
+  - docker build --no-cache -t lltest/gamesvr-blackmesa -t lacledeslan/gamesvr-blackmesa --build-arg BUILDNODE=TravisCI ./linux
+  - docker run -it --rm lltest/gamesvr-blackmesa ./ll-tests/gamesvr-blackmesa.sh
 
 notifications:
   slack:
@@ -27,5 +28,5 @@ deploy:
   on:
     branch: master
 after_deploy:
- - curl -X POST https://hooks.microbadger.com/images/lacledeslan/gamesvr-blackmesa/$MICROBADGER_TOKEN
- - sh ./.travis/trigger-travis.sh LacledesLAN gamesvr-blackmesa-freeplay $TRAVIS_ACCESS_TOKEN
+  - curl -X POST https://hooks.microbadger.com/images/lacledeslan/gamesvr-blackmesa/$MICROBADGER_TOKEN
+  - sh ./.travis/trigger-travis.sh LacledesLAN gamesvr-blackmesa-freeplay $TRAVIS_ACCESS_TOKEN
