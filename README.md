@@ -6,15 +6,15 @@
 
 **Download**
 ```
-docker pull lacledeslan/gamesvr-blackmesa
+docker pull lacledeslan/gamesvr-blackmesa;
+```
+
+**Run Self Tests**
+```
+docker run -it --rm lacledeslan/gamesvr-blackmesa ./ll-tests/gamesvr-blackmesa.sh;
 ```
 
 **Run Interactive Server**
 ```
 docker run -it --rm --net=host lacledeslan/gamesvr-blackmesa ./srcds_run -game bms +map gasworks +sv_lan 1 +maxplayers 16
-```
-
-**Run Self Tests**
-```
-docker run -it --rm lacledeslan/gamesvr-blackmesa ./ll-tests/gamesvr-blackmesa.sh
 ```
