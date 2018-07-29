@@ -34,22 +34,11 @@ RUN useradd --home /app --gid root --system BlackMesa &&`
     chown BlackMesa:root -R /app;
 
 ## Black Mesa is so large we can't reliably use multi-stage builds in docker cloud
+COPY --chown=BlackMesa:root ./steamcmd-cache /app
+COPY --chown=BlackMesa:root --from=blackmesa-builder /app /app/steamcmd
+COPY --chown=BlackMesa:root ./ll-tests /app/ll-tests
 
-# Copy cached build files (if any)
-COPY ./steamcmd-cache /app
-
-#Pull in SteamCMD
-COPY --from=blackmesa-builder /app /app/steamcmd
-
-# Ownership shim until [github.com/moby/moby/pull/34263] makes it into Docker Cloud
-RUN chown -R BlackMesa:root /app;
-
-## Add in tests
-COPY ./ll-tests /app/ll-tests
-
-RUN chmod +rx /app/ll-tests/*.sh &&`
-    chmod +rwx /app/ll-tests &&`
-    chown BlackMesa:root -R /app/ll-tests;
+RUN chmod +x /app/ll-tests/*.sh;
 
 USER BlackMesa
 
