@@ -10,17 +10,19 @@ This repository is maintained by [Laclede's LAN](https://lacledeslan.com). Its c
 [![](https://images.microbadger.com/badges/version/lacledeslan/gamesvr-blackmesa.svg)](https://microbadger.com/images/lacledeslan/gamesvr-blackmesa "Get your own version badge on microbadger.com")
 [![](https://images.microbadger.com/badges/image/lacledeslan/gamesvr-blackmesa.svg)](https://microbadger.com/images/lacledeslan/gamesvr-blackmesa "Get your own image badge on microbadger.com")
 
-**Download**
+### Download
 ```
 docker pull lacledeslan/gamesvr-blackmesa;
 ```
 
-**Run Self Tests**
+### Run Self Tests
+The image includes a test script that can be used to verify its contents. No changes or pull-requests will be accepted to this repository if any tests fail.
+
 ```
 docker run -it --rm lacledeslan/gamesvr-blackmesa ./ll-tests/gamesvr-blackmesa.sh;
 ```
 
-**Run Interactive Server**
+### Run Interactive Server
 ```
 docker run -it --rm --net=host lacledeslan/gamesvr-blackmesa ./srcds_run -game bms +map gasworks +sv_lan 1 +maxplayers 16
 ```
