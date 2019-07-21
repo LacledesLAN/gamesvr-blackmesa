@@ -2,7 +2,7 @@
 FROM lacledeslan/steamcmd:linux as blackmesa-builder
 
 #=======================================================================
-FROM debian:stable-slim
+FROM debian:stretch-slim
 
 ARG BUILDNODE=unspecified
 ARG SKIP_STEAMCMD=false
