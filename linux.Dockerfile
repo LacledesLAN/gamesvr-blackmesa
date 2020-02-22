@@ -1,18 +1,31 @@
 # escape=`
 FROM lacledeslan/steamcmd:linux as blackmesa-builder
 
+ARG SKIP_STEAMCMD=false
+
+# Copy in local cache files (if any)
+COPY ./.steamcmd-cache/linux /output
+
+# Download Blackmesa via SteamCMD
+RUN if [ "$SKIP_STEAMCMD" = true ] ; then `
+        echo "\n\nSkipping SteamCMD install -- using only contents from steamcmd-cache\n\n"; `
+    else `
+        echo "\n\nDownloading Blackmesa via SteamCMD"; `
+        mkdir --parents /output; `
+        /app/steamcmd.sh +login anonymous +force_install_dir /output +app_update 346680 validate +quit; `
+    fi;
+
 #=======================================================================
 FROM debian:stretch-slim
 
 ARG BUILDNODE=unspecified
-ARG SKIP_STEAMCMD=false
 ARG SOURCE_COMMIT=unspecified
 
 HEALTHCHECK NONE
 
 RUN dpkg --add-architecture i386 &&`
     apt-get update && apt-get install -y `
-        ca-certificates lib32gcc1 lib32tinfo5 libstdc++6 libstdc++6:i386 locales locales-all tmux &&`
+        ca-certificates lib32gcc1 lib32stdc++6 lib32tinfo5 libstdc++6 libstdc++6:i386 locales locales-all tmux &&`
     apt-get clean &&`
     echo "LC_ALL=en_US.UTF-8" >> /etc/environment &&`
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*;
@@ -33,26 +46,14 @@ RUN useradd --home /app --gid root --system BlackMesa &&`
     mkdir -p /app/ll-tests &&`
     chown BlackMesa:root -R /app;
 
-## Black Mesa is so large we can't reliably use multi-stage builds in docker cloud
-COPY --chown=BlackMesa:root ./steamcmd-cache /app
-COPY --chown=BlackMesa:root --from=blackmesa-builder /app /app/steamcmd
-COPY --chown=BlackMesa:root ./ll-tests /app/ll-tests
+# `RUN true` lines are work around for https://github.com/moby/moby/issues/36573
+COPY --chown=BlackMesa:root --from=blackmesa-builder /output /app
+RUN true
 
+COPY --chown=BlackMesa:root ./dist/linux/ll-tests /app/ll-tests
 RUN chmod +x /app/ll-tests/*.sh;
 
 USER BlackMesa
-
-# Download Black Mesa Source via SteamCMD
-RUN if [ "$SKIP_STEAMCMD" = true ] ; then `
-        echo "\n\nSkipping SteamCMD install -- using only contents from steamcmd-cache\n\n"; `
-    else `
-        echo "\n\nDownloading  Black Mesa Source via SteamCMD"; `
-        /app/steamcmd/steamcmd.sh `
-            +login anonymous `
-            +force_install_dir /app `
-            +app_update 346680 validate `
-            +quit; `
-    fi;
 
 RUN echo $'\n\nLinking steamclient.so to prevent srcds_run errors' &&`
         mkdir -p /app/.steam/sdk32 &&`
