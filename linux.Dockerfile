@@ -16,7 +16,7 @@ RUN if [ "$SKIP_STEAMCMD" = true ] ; then `
     fi;
 
 #=======================================================================
-FROM debian:stretch-slim
+FROM debian:buster-slim
 
 ARG BUILDNODE=unspecified
 ARG SOURCE_COMMIT=unspecified
@@ -25,7 +25,7 @@ HEALTHCHECK NONE
 
 RUN dpkg --add-architecture i386 &&`
     apt-get update && apt-get install -y `
-        ca-certificates lib32gcc1 lib32stdc++6 lib32tinfo5 libstdc++6 libstdc++6:i386 locales locales-all tmux &&`
+        ca-certificates lib32gcc1 lib32stdc++6 libtinfo5:i386 libstdc++6 libstdc++6:i386 locales locales-all tmux &&`
     apt-get clean &&`
     echo "LC_ALL=en_US.UTF-8" >> /etc/environment &&`
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*;

@@ -147,6 +147,7 @@ fi;
 ### TESTS ###########################################################################################
 # Stock Black Mesa Source server tests
 should_have 'Using default binary: ./srcds_linux' 'Sever started executing';
+should_lack 'Failed to open dedicated.so' 'loaded dedicated.so';
 should_lack 'Server restart in 10 seconds' 'Server is not boot-looping';
 should_lack 'Please install (lib32tinfo5 / ncurses-libs.i686 / equivalent) to enable readline' 'readline dependencies found';
 should_lack 'Running the dedicated server as root' 'Server is not running under root';
