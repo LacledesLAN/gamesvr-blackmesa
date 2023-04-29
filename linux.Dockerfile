@@ -4,11 +4,11 @@ FROM lacledeslan/steamcmd:linux as blackmesa-builder
 ARG SKIP_STEAMCMD=false
 
 # Copy in local cache files (if any)
-COPY ./.steamcmd-cache/linux /output
+COPY ./.steamcmd/linux /output
 
 # Download Blackmesa via SteamCMD
 RUN if [ "$SKIP_STEAMCMD" = true ] ; then `
-        echo "\n\nSkipping SteamCMD install -- using only contents from steamcmd-cache\n\n"; `
+        echo "\n\nSkipping SteamCMD install -- using only contents from steamcmd\n\n"; `
     else `
         echo "\n\nDownloading Blackmesa via SteamCMD"; `
         mkdir --parents /output; `
