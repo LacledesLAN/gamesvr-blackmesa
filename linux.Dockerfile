@@ -1,5 +1,5 @@
 # escape=`
-FROM lacledeslan/steamcmd:linux as blackmesa-builder
+FROM lacledeslan/steamcmd:linux AS blackmesa-builder
 
 ARG SKIP_STEAMCMD=false
 
