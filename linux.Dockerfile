@@ -6,6 +6,7 @@ ARG SKIP_STEAMCMD=false
 COPY ./.steamcmd/linux /output
 
 # Download Blackmesa via SteamCMD
+
 RUN if [ "$SKIP_STEAMCMD" = true ] ; then \
         echo "\n\nSkipping SteamCMD install -- using only contents from steamcmd\n\n"; \
     else \
@@ -14,15 +15,18 @@ RUN if [ "$SKIP_STEAMCMD" = true ] ; then \
         /app/steamcmd.sh +force_install_dir /output +login anonymous +app_update 346680 validate +quit; \
     fi;
 
-#=======================================================================
+
+#---------------------------------
 FROM debian:bookworm-slim
 
-ARG BUILD_NODE=unspecified
-ARG GIT_REVISION=unspecified
+ARG BUILD_DATE=unspecified \
+    BUILD_NODE=unspecified \
+    GIT_REVISION=unspecified
 
 LABEL architecture="i386" \
     com.lacledeslan.build-node="$BUILD_NODE" \
     maintainer="Laclede's LAN <contact@lacledeslan.com>" \
+    org.opencontainers.image.created="$BUILD_DATE" \
     org.opencontainers.image.description="Black Mesa Dedicated Server" \
     org.opencontainers.image.revision="$GIT_REVISION" \
     org.opencontainers.image.source="https://github.com/LacledesLAN/gamesvr-blackmesa" \
@@ -44,11 +48,10 @@ RUN useradd --home /app --gid root --system BlackMesa && \
     mkdir -p /app/ll-tests && \
     chown BlackMesa:root -R /app;
 
-# `RUN true` lines are work around for https://github.com/moby/moby/issues/36573
 COPY --chown=BlackMesa:root --from=blackmesa-builder /output /app
-RUN true
 
 COPY --chown=BlackMesa:root ./dist/linux/ll-tests /app/ll-tests
+
 RUN chmod +x /app/ll-tests/*.sh;
 
 USER BlackMesa
