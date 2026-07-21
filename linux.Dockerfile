@@ -24,13 +24,13 @@ ARG BUILD_DATE=unspecified \
     GIT_REVISION=unspecified
 
 LABEL architecture="i386" \
-    com.lacledeslan.build-node="$BUILD_NODE" \
-    maintainer="Laclede's LAN <contact@lacledeslan.com>" \
-    org.opencontainers.image.created="$BUILD_DATE" \
-    org.opencontainers.image.description="Black Mesa Dedicated Server" \
-    org.opencontainers.image.revision="$GIT_REVISION" \
-    org.opencontainers.image.source="https://github.com/LacledesLAN/gamesvr-blackmesa" \
-    org.opencontainers.image.vendor="Laclede's LAN"
+      com.lacledeslan.build-node="${BUILD_NODE}" \
+      maintainer="Laclede's LAN <contact@lacledeslan.com>" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.description="Black Mesa Dedicated Server" \
+      org.opencontainers.image.revision="${GIT_REVISION}" \
+      org.opencontainers.image.source="https://github.com/LacledesLAN/gamesvr-blackmesa" \
+      org.opencontainers.image.vendor="Laclede's LAN"
 
 HEALTHCHECK NONE
 
