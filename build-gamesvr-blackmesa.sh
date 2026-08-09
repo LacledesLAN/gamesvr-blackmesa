@@ -51,7 +51,7 @@ if [ "$option_delta_updates" != 'true' ]; then
     #
 
     echo -e '\n\033[1m[Build Full Image]\033[0m';
-    docker build . -f linux.Dockerfile --rm -t lacledeslan/gamesvr-blackmesa:latest --no-cache --pull --build-arg BUILDNODE="$(cat /proc/sys/kernel/hostname)";
+    docker build . --pull -f linux.Dockerfile --rm -t gamesvr-blackmesa:latest --no-cache --pull --build-arg BUILDNODE="$(cat /proc/sys/kernel/hostname)";
 else
     #
     # Delta Update
@@ -81,10 +81,11 @@ fi;
 
 
 echo -e '\n\033[1m[Running Image Self-Checks]\033[0m';
-docker run -it --rm lacledeslan/gamesvr-blackmesa:latest ./ll-tests/gamesvr-blackmesa.sh;
+./tests/test-gamesvr-blackmesa.sh gamesvr-blackmesa /app/srcds_run -game bms +map gasworks -insecure -maxplayers 8 -norestart +sv_lan 1;
 
 
 echo -e '\n\033[1m[Pushing to Docker Hub]\033[0m';
+docker tag gamesvr-blackmesa:latest lacledeslan/gamesvr-blackmesa:latest;
 
 if [ "$option_delta_updates" != 'true' ]; then
     #

@@ -5,7 +5,7 @@ from the original Half-Life; the player can carry a number of weapons that they 
 though they must also locate ammunition for most weapons. Fight with or against your friends, in two game modes across
 10 iconic maps from the Half-Life universe including Bounce, Gasworks, Stalkyard, Undertow and Crossfire!
 
-![Black Mesa Box Art](https://raw.githubusercontent.com/LacledesLAN/gamesvr-blackmesa/main/.misc/boxart.jpg "Black Mesa Box Art")
+![Black Mesa Box Art](https://raw.githubusercontent.com/LacledesLAN/gamesvr-blackmesa/refs/heads/main/.documentation/banner-blackmesa.jpg "Black Mesa Box Art")
 
 This repository is maintained by [Laclede's LAN](https://lacledeslan.com). Its contents are intended to be bare-bones
 and used as a stock server. For examples of building a customized server from this Docker image browse its related
@@ -20,19 +20,19 @@ documentation is unclear or it has any issues please see [CONTRIBUTING.md](./CON
 docker pull lacledeslan/gamesvr-blackmesa;
 ```
 
-### Run Self Tests
-
-The image includes a test script that can be used to verify its contents. No changes or pull-requests will be accepted
-to this repository if any tests fail.
-
-```shell
-docker run -it --rm lacledeslan/gamesvr-blackmesa ./ll-tests/gamesvr-blackmesa.sh;
-```
-
 ### Run Interactive Server
 
 ```shell
 docker run -it --rm --net=host lacledeslan/gamesvr-blackmesa ./srcds_run -game bms +map gasworks +sv_lan 1 +maxplayers 16
+```
+
+### Run Self Tests
+
+The projects includes a test script that can be used to verify built docker images. No changes or pull-requests will be 
+accepted to this repository if any tests fail.
+
+```shell
+./tests/test-gamesvr-blackmesa.sh lacledeslan/gamesvr-blackmesa /app/srcds_run -game bms +map gasworks -insecure -maxplayers 8 -norestart +sv_lan 1;
 ```
 
 ## Getting Started with Game Servers in Docker

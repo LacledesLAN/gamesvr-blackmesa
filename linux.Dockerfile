@@ -2,26 +2,38 @@ FROM lacledeslan/steamcmd:linux AS blackmesa-builder
 
 ARG ENABLE_STEAMCMD_CACHE=false
 
-# Copy in local cache files (if any)
-COPY ./.steamcmd/linux /output
+WORKDIR /output
 
 # Download Blackmesa via SteamCMD
-
-RUN if [ "$SKIP_STEAMCMD" = true ] ; then \
-        echo "\n\nSkipping SteamCMD install -- using only contents from steamcmd\n\n"; \
+RUN --mount=type=cache,id=blackmesa-steamcmd-cache,target=/mnt/steam-cache \
+    echo "Downloading/Updating Black Mesa Dedicated Server via SteamCMD..." && \
+    if [ "$ENABLE_STEAMCMD_CACHE" = "true" ]; then \
+        INSTALL_DIR="/mnt/steam-cache"; \
     else \
-        echo "\n\nDownloading Blackmesa via SteamCMD"; \
-        mkdir --parents /output; \
-        /app/steamcmd.sh +force_install_dir /output +login anonymous +app_update 346680 validate +quit; \
-    fi;
+        INSTALL_DIR="/output"; \
+    fi && \
+    # Run SteamCMD
+    /app/steamcmd.sh \
+        +force_install_dir "$INSTALL_DIR" \
+        +login anonymous \
+        +app_update 346680 validate \
+        +quit && \
+    # Only perform the sync step if the user explicitly opted into the cache
+    if [ "$ENABLE_STEAMCMD_CACHE" = "true" ]; then \
+        cp -r "$INSTALL_DIR"/. /output/; \
+    fi
 
 
 #---------------------------------
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 ARG BUILD_DATE=unspecified \
     BUILD_NODE=unspecified \
     GIT_REVISION=unspecified
+
+HEALTHCHECK NONE
+
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 LABEL architecture="i386" \
       com.lacledeslan.build-node="${BUILD_NODE}" \
@@ -32,33 +44,26 @@ LABEL architecture="i386" \
       org.opencontainers.image.source="https://github.com/LacledesLAN/gamesvr-blackmesa" \
       org.opencontainers.image.vendor="Laclede's LAN"
 
-HEALTHCHECK NONE
+# The Blackmesa server benefits from libtinfo.so.5, which is not available in Debian 12+ (Bookworm).
+COPY ./dist/libtinfo.5_6.4.4/i386/lib/i386-linux-gnu/libtinfo.so.5.9 /lib/i386-linux-gnu/libtinfo.so.5
 
 RUN dpkg --add-architecture i386 && \
-    apt-get update && apt-get install -y \
-        ca-certificates lib32gcc-s1 libtinfo5:i386 libstdc++6:i386 locales locales-all tmux && \
-    apt-get clean && \
-    echo "LC_ALL=en_US.UTF-8" >> /etc/environment && \
-    rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*;
-
-ENV LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8
-
-# Set up Enviornment
-RUN useradd --home /app --gid root --system BlackMesa && \
-    mkdir -p /app/ll-tests && \
-    chown BlackMesa:root -R /app;
+    apt-get update && \
+        apt-get install -y --no-install-recommends --no-install-suggests --no-upgrade \
+            ca-certificates libsdl2-2.0-0:i386 libstdc++6:i386 && \
+        apt-get clean && \
+        rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* && \
+    # Symlink the Steam client library to prevent srcds_run errors
+    mkdir -p /app/.steam/sdk32/ && \
+        ln -s /app/bin/steamclient.so /app/.steam/sdk32/steamclient.so && \
+        test -L /app/.steam/sdk32/steamclient.so &&\
+    # Update username, home directory, and permissions for the BlackMesa user
+    useradd --home /app --gid root --system BlackMesa && \
+        chown BlackMesa:root -R /app;
 
 COPY --chown=BlackMesa:root --from=blackmesa-builder /output /app
 
-COPY --chown=BlackMesa:root ./dist/linux/ll-tests /app/ll-tests
-
-RUN chmod +x /app/ll-tests/*.sh;
-
 USER BlackMesa
-
-RUN echo $'\n\nLinking steamclient.so to prevent srcds_run errors' && \
-        mkdir -p /app/.steam/sdk32 && \
-        ln -s /app/bin/steamclient.so /app/.steam/sdk32/steamclient.so;
 
 WORKDIR /app
 

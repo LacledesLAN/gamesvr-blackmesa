@@ -6,27 +6,15 @@
         {
             "label": "Build",
             "type": "shell",
-            "command": "docker pull lacledeslan/steamcmd:linux; docker build . -f linux.Dockerfile -t lltest/gamesvr-blackmesa --no-cache --build-arg BUILDNODE=$env:computername;",
+            "command": "docker build . --pull -f linux.Dockerfile -t gamesvr-blackmesa --no-cache --build-arg BUILDNODE=$env:computername;",
             "group": "build",
-            "problemMatcher": [],
-            "promptOnClose": true
-        },
-        {
-            "label": "Build & Execute Self Tests",
-            "type": "shell",
-            "command": "docker run -it --rm lltest/gamesvr-blackmesa ./ll-tests/gamesvr-blackmesa.sh;",
-            "dependsOn": "Build",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
             "problemMatcher": [],
             "promptOnClose": true
         },
         {
             "label": "Build & Run Interactive Server",
             "type": "shell",
-            "command": "docker run -it --net=host lltest/gamesvr-blackmesa ./srcds_run -game bms +map gasworks -insecure -maxplayers 8 +sv_lan 1 +userrcon +rcon_password \"test123\";",
+            "command": "docker run -it --net=host gamesvr-blackmesa ./srcds_run -game bms +map gasworks -insecure -maxplayers 8 +sv_lan 1 +userrcon +rcon_password \"test123\";",
             "dependsOn": "Build",
             "group": "build",
             "problemMatcher": [],
@@ -35,17 +23,11 @@
         {
             "label": "Build & Shell In",
             "type": "shell",
-            "command": "docker run -it --net=host --rm lltest/gamesvr-blackmesa;",
+            "command": "docker run -it --net=host --rm gamesvr-blackmesa;",
             "dependsOn": "Build",
             "group": "build",
             "problemMatcher": [],
             "promptOnClose": true
-        },
-        {
-            "label": "Build local SteamCMD cache",
-            "type": "shell",
-            "command": "docker run --rm -v ${cwd}/.steamcmd/linux:/output lacledeslan/steamcmd:linux ./steamcmd.sh +login anonymous +force_install_dir /output +app_update 346680 validate +quit",
-            "problemMatcher": []
         }
     ]
 }
