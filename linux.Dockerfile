@@ -1,6 +1,6 @@
 FROM lacledeslan/steamcmd:linux AS blackmesa-builder
 
-ARG SKIP_STEAMCMD=false
+ARG ENABLE_STEAMCMD_CACHE=false
 
 # Copy in local cache files (if any)
 COPY ./.steamcmd/linux /output

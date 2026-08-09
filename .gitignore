@@ -1,8 +1,7 @@
-.steamcmd/**
-!.steamcmd/[Rr]eadme.md
-!.steamcmd/linux
-.steamcmd/linux/**
-!.steamcmd/linux/.gitkeep
+### Project Specific ###
+tests/logs/**
+!tests/logs/.gitkeep
+
 
 ### VisualStudioCode ###
 .vscode/*

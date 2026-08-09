@@ -1,3 +1,6 @@
-tmp**
-.steamcmd/readme.md
-.steamcmd/*/.gitkeep
+.git/**
+.github/**
+.misc/**
+.vscode/**
+.gitkeep
+tests/

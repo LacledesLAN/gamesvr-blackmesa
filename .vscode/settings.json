@@ -1,6 +1,8 @@
 {
     "cSpell.words": [
         "Blackmesa",
+        "BUILDDATE",
+        "BUILDNODE",
         "dockerhub",
         "Dockerized",
         "freeplay",
@@ -9,9 +11,12 @@
         "Laclede's",
         "Laclede’s",
         "lacledeslan",
+        "libtinfo",
         "maxplayers",
+        "norestart",
         "srcds",
-        "steamcmd"
+        "steamcmd",
+        "trixie"
     ],
     "markdownlint.ignore": [
         ".gitkeep", "LICENSE"
