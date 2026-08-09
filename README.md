@@ -5,7 +5,7 @@ from the original Half-Life; the player can carry a number of weapons that they 
 though they must also locate ammunition for most weapons. Fight with or against your friends, in two game modes across
 10 iconic maps from the Half-Life universe including Bounce, Gasworks, Stalkyard, Undertow and Crossfire!
 
-![Black Mesa Box Art](https://raw.githubusercontent.com/LacledesLAN/gamesvr-blackmesa/master/.misc/boxart.jpg "Black Mesa Box Art")
+![Black Mesa Box Art](https://raw.githubusercontent.com/LacledesLAN/gamesvr-blackmesa/main/.misc/boxart.jpg "Black Mesa Box Art")
 
 This repository is maintained by [Laclede's LAN](https://lacledeslan.com). Its contents are intended to be bare-bones
 and used as a stock server. For examples of building a customized server from this Docker image browse its related
@@ -39,8 +39,8 @@ docker run -it --rm --net=host lacledeslan/gamesvr-blackmesa ./srcds_run -game b
 
 [Docker](https://docs.docker.com/) is an open-source project that bundles applications into lightweight, portable,
 self-sufficient containers. For a crash course on running Dockerized game servers check out [Using Docker for Game
-Servers](https://github.com/LacledesLAN/README.1ST/blob/master/GameServers/DockerAndGameServers.md). For tips, tricks,
+Servers](https://github.com/LacledesLAN/README.1ST/blob/main/GameServers/DockerAndGameServers.md). For tips, tricks,
 and recommended tools for working with Laclede's LAN Dockerized game server repos see the guide for [Working with our
-Game Server Repos](https://github.com/LacledesLAN/README.1ST/blob/master/GameServers/WorkingWithOurRepos.md). You can
+Game Server Repos](https://github.com/LacledesLAN/README.1ST/blob/main/GameServers/WorkingWithOurRepos.md). You can
 also browse all of our other Dockerized game servers: [Laclede's LAN Game Servers
-Directory](https://github.com/LacledesLAN/README.1ST/tree/master/GameServers).
+Directory](https://github.com/LacledesLAN/README.1ST/tree/main/GameServers).
