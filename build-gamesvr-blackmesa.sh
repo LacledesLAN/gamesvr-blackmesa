@@ -75,7 +75,7 @@ else
 
 
     echo -e '\n\033[1m[Commiting Delta Container to Image]\033[0m'
-    docker commit --change='CMD ["/bin/bash"]' --message="Content delta update $(date '+%d/%m/%Y %H:%M:%S')" "$(docker ps -aqf "name=LL-CSGO-DELTA-CAPTURE")" lacledeslan/gamesvr-csgo:latest
+    docker commit --change='CMD ["/bin/bash"]' --message="Content delta update $(date '+%d/%m/%Y %H:%M:%S')" "$(docker ps -aqf "name=LL-BLACKMESA-DELTA-CAPTURE")" gamesvr-blackmesa:latest
     docker container rm LL-BLACKMESA-DELTA-CAPTURE
 fi;
 
